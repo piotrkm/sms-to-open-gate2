@@ -11,6 +11,7 @@
 #include "message.h"
 #include "gate.h"
 #include "temperature.h"
+#include "gprs.h"
 
 #define LED 13          // The pin 13 associated to the onboard LED
 #define VERBOSE true    // Set the verbose mode;
@@ -153,6 +154,17 @@ void loop() {
           
         }
         
+      // ========================
+      // GPRS COMMAND
+      // ========================
+      if(mes.text_contains("GPRS"))
+        {
+          Serial.println("###     GPRS is executed     ###");
+          gprs GprsObj {};
+
+
+        }
+
         
     } // _END OF_INCOMMING_MESSAGE_
     

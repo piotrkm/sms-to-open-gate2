@@ -94,7 +94,7 @@ String gsmClass::readFromGsm()
   Read a single char from THE SOFTWARE SERIAL PORT
   */
   String read = gsmSerial.readStringUntil('\n');
-  //delay(300);
+  delay(30);
   return read;
 }
 
