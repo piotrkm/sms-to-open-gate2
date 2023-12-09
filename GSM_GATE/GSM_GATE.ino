@@ -40,14 +40,8 @@ void setup() {
   
   if(gsm.get_verbose())
     Serial.println("\n### [       Program started !         ###]");   
-  
     gsm.flush_to_serial();
- 
-    gsm.initialize();
-    
- 
-  //gsm.send_sms("tresc smsa", "+447843782526");
-  
+    gsm.initialize();  
 } // END OF _SETUP_
 
 

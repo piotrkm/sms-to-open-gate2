@@ -116,7 +116,7 @@ void gsmClass::flush_to_serial()
   */
     while(serial_available()) 
       {
-        Serial.print(readFromGsm());
+        Serial.println(readFromGsm());
         Serial.flush();
       }
   

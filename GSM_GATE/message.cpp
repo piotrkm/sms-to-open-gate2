@@ -2,12 +2,6 @@
 #include "message.h"
 
 
-/*
-templete text message 
-+CMT: "+447843780000","","23/11/05,14:41:11+00"
-SMS content
-*/
-
 
 message::message(const String &content)
 {
