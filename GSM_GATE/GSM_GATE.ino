@@ -152,7 +152,68 @@ void loop() {
           gsm.send_sms(temp_val.c_str(), number.c_str());
           
         }
-        
+
+      // =====================
+      // GPRS REQUEST
+      // =====================
+      if(mes.text_contains("gprs")) 
+        {
+          number = mes.get_number();
+          // INITIALIZE GPRS
+          String gprs_initial_list [6] = {
+            "AT+SAPBR=3,1,\"Contype\",\"GPRS\"",
+            "AT+SAPBR=3,1,\"APN\",\"internet\"",
+            "AT+SAPBR=1,1",
+            "AT+SAPBR=2,1",
+            "AT+HTTPINIT",
+            "AT+HTTPPARA=\"CID\",1"}; 
+
+            String gprs_request = "AT+HTTPPARA=\"URL\",";
+
+          String gprs_terminate_list [4] = {
+            "AT+HTTPACTION=0",
+            "AT+SAPBR=0,1",
+            "AT+HTTPREAD",
+            "AT+HTTPTERM"};
+
+          Serial.println("###  INITIALIZE GPRS ###");
+          for(size_t i {0}; i<= 5; i++)
+          {
+            Serial.print("Serial: ");
+            Serial.println(gprs_initial_list[i].c_str());
+            gsm.send_command(gprs_initial_list[i].c_str());
+            delay(1500);
+          }
+          Serial.println("###  INITIALIZATION COMPLETED ###");
+          Serial.println("###  SENDING REQUEST ###");
+
+          String temperature {};
+          temperature = String(TempObj.get_t());
+          String http_request = "";
+          http_request = gprs_request;
+          http_request += "\"pkmita.vxm.pl/temperature.php?temp="; 
+          http_request += temperature; 
+          http_request += "\"";
+          
+          
+          gsm.send_command("AT+HTTPPARA=\"URL\",\"pkmita.vxm.pl/temperature.php?temp=10.00\"");
+          delay(1500);
+          
+          Serial.print("Serial: ");
+          Serial.println(http_request);
+          Serial.flush();
+          
+          Serial.println("###  TERMINATION GPRS ###");
+
+          for(size_t i {0}; i<= 3; i++)
+          {
+            gsm.send_command(gprs_terminate_list[i].c_str());
+            delay(1500);
+          }
+
+
+        }
+
         
     } // _END OF_INCOMMING_MESSAGE_
     
@@ -185,19 +246,19 @@ void loop() {
   //
   // =========================
   
-  String list [] = {
-    "AT+SAPBR=3,1,\"Contype\",\"GPRS\"",
-    "AT+SAPBR=3,1,\"APN\",\"internet\"",
-    "AT+SAPBR=1,1",
-    "AT+SAPBR=2,1",
-    "AT+HTTPINIT",
-    "AT+HTTPPARA=\"CID\",1",
-    "AT+HTTPPARA=\"URL\",\"pkmita.vxm.pl/date.php\"",
-    "AT+HTTPACTION=0",
-    "AT+SAPBR=0,1",
-    "AT+HTTPREAD",
-    "AT+HTTPTERM"
-  };
+  // String list [] = {
+  //   "AT+SAPBR=3,1,\"Contype\",\"GPRS\"",
+  //   "AT+SAPBR=3,1,\"APN\",\"internet\"",
+  //   "AT+SAPBR=1,1",
+  //   "AT+SAPBR=2,1",
+  //   "AT+HTTPINIT",
+  //   "AT+HTTPPARA=\"CID\",1",
+  //   "AT+HTTPPARA=\"URL\",\"pkmita.vxm.pl/date.php\"",
+  //   "AT+HTTPACTION=0",
+  //   "AT+SAPBR=0,1",
+  //   "AT+HTTPREAD",
+  //   "AT+HTTPTERM"
+  // };
   
   // for(size_t i{0}; i < 11; i++ )
   //   {

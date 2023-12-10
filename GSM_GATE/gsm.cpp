@@ -94,7 +94,7 @@ String gsmClass::readFromGsm()
   Read a single char from THE SOFTWARE SERIAL PORT
   */
   String read = gsmSerial.readStringUntil('\n');
-  //delay(300);
+  //delay(30);
   return read;
 }
 
@@ -103,10 +103,17 @@ void gsmClass::send_command(const char *text)
   /*
   Send a command to GSM
   */
-  gsmSerial.println(text);
+  //gsmSerial.println(text);
+  for(size_t i {0}; *(text+i); i++)
+    {
+      gsmSerial.print(*(text+i));
+      delay(50);
+    }
+  gsmSerial.println("");
   delay(300);
   flush_to_serial();
 }
+
 
 void gsmClass::flush_to_serial()
 {

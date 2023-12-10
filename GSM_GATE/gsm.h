@@ -21,9 +21,11 @@ public:
   void flush_to_serial();
   void set_verbose(bool);
   bool get_verbose();
+
 private:
   bool verbose {false};
-  
+
+
   SoftwareSerial gsmSerial = SoftwareSerial(RXpin, TXpin);
   
 };
