@@ -41,6 +41,7 @@ void setup() {
   if(gsm.get_verbose())
     Serial.println("\n### [       Program started !         ###]");   
     gsm.flush_to_serial();
+    delay(500);
     gsm.initialize();  
 } // END OF _SETUP_
 
@@ -159,6 +160,8 @@ void loop() {
       if(mes.text_contains("gprs")) 
         {
           number = mes.get_number();
+          String temperature {};
+          temperature = String(TempObj.get_t());
           // INITIALIZE GPRS
           String gprs_initial_list [6] = {
             "AT+SAPBR=3,1,\"Contype\",\"GPRS\"",
@@ -168,7 +171,7 @@ void loop() {
             "AT+HTTPINIT",
             "AT+HTTPPARA=\"CID\",1"}; 
 
-            String gprs_request = "AT+HTTPPARA=\"URL\",";
+            String gprs_request = "AT+HTTPPARA=\"URL\",\"pkmita.vxm.pl/temperature.php?temp=" + temperature + "\"";
 
           String gprs_terminate_list [4] = {
             "AT+HTTPACTION=0",
@@ -179,38 +182,47 @@ void loop() {
           Serial.println("###  INITIALIZE GPRS ###");
           for(size_t i {0}; i<= 5; i++)
           {
-            Serial.print("Serial: ");
+            Serial.print("# No:");
+            Serial.print(i);
+            Serial.print("\t");
             Serial.println(gprs_initial_list[i].c_str());
             gsm.send_command(gprs_initial_list[i].c_str());
             delay(1500);
+            String m {};
+            m = gsm.readFromGsm();
+            Serial.println(m);
+
           }
           Serial.println("###  INITIALIZATION COMPLETED ###");
           Serial.println("###  SENDING REQUEST ###");
 
-          String temperature {};
-          temperature = String(TempObj.get_t());
-          String http_request = "";
-          http_request = gprs_request;
-          http_request += "\"pkmita.vxm.pl/temperature.php?temp="; 
-          http_request += temperature; 
-          http_request += "\"";
-          
-          
-          gsm.send_command("AT+HTTPPARA=\"URL\",\"pkmita.vxm.pl/temperature.php?temp=10.00\"");
+          Serial.print("#GPRS REQUEST: ");
+          Serial.println(gprs_request.c_str());
+          gsm.send_command(gprs_request.c_str());
           delay(1500);
+          while(gsm.serial_available())
+          Serial.println(gsm.readFromGsm());
+
           
-          Serial.print("Serial: ");
-          Serial.println(http_request);
-          Serial.flush();
+          
+          //gsm.send_command("AT+HTTPPARA=\"URL\",\"pkmita.vxm.pl/temperature.php?temp=10.00\"");
+
           
           Serial.println("###  TERMINATION GPRS ###");
 
           for(size_t i {0}; i<= 3; i++)
           {
+            Serial.print("# No:");
+            Serial.print(i);
+            Serial.print("\t");
+            Serial.println(gprs_terminate_list[i].c_str());
             gsm.send_command(gprs_terminate_list[i].c_str());
             delay(1500);
-          }
+            while(gsm.serial_available())
+            Serial.println(gsm.readFromGsm());
 
+          }
+          Serial.println("###  TERMINATION ENDED UP ###");
 
         }
 
