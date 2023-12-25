@@ -17,7 +17,7 @@ gsmClass::gsmClass(bool set_verbose)
   and activete it by sending empty AT command
   */
   gsmSerial.begin(9600);
-  gsmSerial.setTimeout(2000);
+  gsmSerial.setTimeout(3000);
   gsmSerial.print("AT\r");
   gsmSerial.flush();
   verbose = set_verbose;        // set default verbose mode to NO VERBOSE
@@ -105,8 +105,11 @@ void gsmClass::send_command(const char *text)
   Send a command to GSM
   */
   gsmSerial.println(text);
+  delay(100);
+  gsmSerial.flush();
+  delay(100);
   flush_to_serial();
-  delay(300);
+  delay(100);
 }
 
 
